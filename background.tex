@@ -138,7 +138,7 @@ goal condition $\G$.
 % and propagated back to the task planner. The new high-level plan correctly grasps the obstruction
 % before grasping $o_{t}$, and refining this plan succeeds.
 
-\subsection{Markov Decision Processes and Reinforcement Learning}
+\subsection{Markov Decision Processes}
 Markov decision processes (MDPs) provide a way to formalize
 interactions between agents and environments. At each step of an MDP,
 the agent knows its current state and selects an action. This causes the
@@ -160,26 +160,3 @@ discounted future rewards generated from starting in state $s$ and selecting act
 to $\pi$:
 $$V_{\pi}(s) = \mathbb{E}[\sum_{t=0}^{\infty}\gamma^{t}R(s_{t}) | \pi, s_{0} = s].$$
 The optimal policy, $\pi^{*}$, maximizes this value for all states.
-
-In reinforcement learning (RL), an agent must determine $\pi^{*}$
-through interaction with its environment (i.e. without explicit access
-to $\St$ or $T$). At each timestep, the agent knows the state and what
-actions are available, but initially does not know how taking actions will
-affect the state. There is a large body of research on RL, and
-standard techniques include value function approximation, which uses methods such as temporal difference
-(TD) learning, and direct policy estimation, which encompasses both gradient-based
-and gradient-free methods~\cite{suttonbarto}.
-
-\subsection{Reinforcement Learning for Planning}
-Our problem formulation is motivated by Zhang and Dietterich's application of RL to job
-shop scheduling~\cite{JobShopSched}. Job shop scheduling is a combinatorial optimization problem where the goal is to find
-a minimum-duration schedule of a set of jobs with temporal and resource constraints. An empirically
-successful approach to this problem relies on a randomized local search that proposes changes to an
-existing suboptimal schedule. The authors formulate this as an MDP and use $TD(\lambda)$~\cite{suttonbarto} with function
-approximation to learn a value function for it. Their approach outperforms the previous state of the art for this task and
-scales better to larger scheduling problems.
-
-Zucker et al.~\cite{workspacebias} use RL to bias the distribution of a rapidly exploring random tree (RRT)
-for motion planning. Their approach uses features of a discretization of the workspace to train
-a non-uniform configuration space sampler using policy gradient algorithms.
-In our work, we adapt their gradient updates to the TAMP framework (Section V-C).

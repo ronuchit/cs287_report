@@ -1,23 +1,26 @@
 \section{Related Work}
-Our work uses machine learning techniques to improve planning reliability in a TAMP system.
+Our work uses machine learning techniques common in learning from demonstrations to improve
+planning reliability in a TAMP system.
 
 Kaelbling et al.~\cite{kaelbling2011hierarchical} use hand-coded ``geometric suggesters'' to propose
 continuous geometric values for the plan parameters. These suggesters are heuristic
 computations which map information about the robot type and geometric operators to a restricted
-set of values to sample for each plan parameter. Our methods could be adapted here to learn these
-suggesters.
+set of values to sample for each plan parameter.
 
 Lagriffoul et al.~\cite{lagriffoul2014orientation}
 propose a set of geometric constraints involving the kinematics and sizes of the specific objects of
 interest in the environment. These constraints then define a feasible region from which to search
-for geometric instantiations of plan parameters. Our approach could be adapted to learn generalized
-versions of these constraints that apply to various domains.
+for geometric instantiations of plan parameters.
 
 Garrett et al.~\cite{GarrettWAFR14} use information about reachability in the robot configuration
 space and symbolic state space to construct a \emph{relaxed plan graph} that guides motion
 planning queries, using geometric biases to break ties among states with the same heuristic value.
-By contrast, we allow RL to shape distributions for motion planning queries, so reachability information
-is naturally incorporated.
+
+By contrast to these methods, which can be viewed as hand-coding methods for refining a single plan,
+we learn methods for searching the space of high level task plans. This constitutes a meta-level search,
+which can be augmented by any of the described approaches, or by the approach for learning refinement
+distributions used in Chitnis et al.~\cite{chitnis2015mlpc} (as in this paper). To our knowledge, our work
+is the first to use learning from demonstrations to guide search over the space of task plans in a TAMP system.
 
 Another line of work has been devoted to using machine learning techniques for
 training heuristics to guide search algorithms. This general formulation
@@ -28,15 +31,13 @@ problems using local search routines. They describe an algorithm, \textsc{Stage}
 for learning a state evaluation function using features of the optimization problem.
 This function then guides the local search toward better optima.
 
-% Arbelaez et al.~\cite{hamadisearch} use machine learning to solve constraint
-% satisfaction problems (CSPs). Their approach, Continuous Search, maintains a heuristic
-% model for solving CSPs and alternates between two modes. In the \emph{exploitation} mode,
-% the current heuristic model is used to solve user-inputted CSPs. In the \emph{exploration}
-% mode, this model is refined using supervised learning with a linear SVM.
+Arbelaez et al.~\cite{hamadisearch} use machine learning to solve constraint
+satisfaction problems (CSPs). Their approach, Continuous Search, maintains a heuristic
+model for solving CSPs and alternates between two modes. In the \emph{exploitation} mode,
+the current heuristic model is used to solve user-inputted CSPs. In the \emph{exploration}
+mode, this model is refined using supervised learning with a linear SVM.
 
 Xu et al.~\cite{Xu07discriminativelearning} apply machine learning for classical task
 planning, drawing inspiration from recent advances in discriminative learning for
 structured output classification. Their system trains heuristics for controlling forward
 state-space beam search in task planners.
-
-To our knowledge, our work is the first to use machine learning to guide search in a TAMP system.
