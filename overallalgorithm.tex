@@ -67,31 +67,19 @@ refinements of each high-level plan with the addition into the
 PRGraph of new edges and plan nodes using the semantics described above.
 
 \subsection{Previous Approach for Learning to Search the Graph}
-TODO: clean this up a lot
-
 Chitnis et al.~\cite{chitnis2015mlpc} explain that the high level has a two-tiered
 decision to make: which node in the plan refinement graph to
-visit next, and whether to attempt to refine this node or generate failure information
-from it. They develop heuristics that are trained to estimate
-the difficulty associated with refining a plan, to make this decision intelligently.
+visit next, and whether to 1) attempt to refine this node or 2) quickly generate failure information
+from it, thus spawning a child node. They develop heuristics that are trained to estimate
+the difficulty associated with refining a plan, in order to make this decision intelligently.
 
-To select between the potential refinement options, the authors learn decision tree regressors
-to answer the following questions about a single node $n$ containing plan $p$: 1) how many iterations of randomized refinement
-would be needed to achieve a valid refinement for $p$ ($\infty$ if $p$ has no valid refinement); 2)
-if we quickly generate a child node $n'$ under $n$ by discovering geometric facts and producing a new plan $p'$,
-how many iterations would be needed to refine $p'$? They approach this by learning an estimate of the
-number of iterations needed to refine \emph{each} action. To obtain an estimate for a full plan, they
-sum this number across all of the plan's actions. This implicitly assumes that dependencies in plans are, in some way, local;
+To select between the potential refinement options, the authors learn two decision tree regressors
+that determine how many iterations would be needed to achieve a valid refinement for a node, or for a child
+of that node which incorporates a single additional geometric fact about the environment.
+To obtain an estimate for a full plan, they sum this number across all of the plan's actions.
+This implicitly assumes that dependencies in plans are, in some way, local;
 it only makes sense if a plan can be split into subportions with independent refinements.
 
-To train the regressors, we fix pre-trained policies for plan refinement and construct datasets
-for supervised learning as follows. For the first regressor, we run refinement on the root
-node of the graph over 500 random environments sampled from $\Prob$, and measure the feature vector and number of iterations
-until valid refinement (arbitrarily large if no valid refinement exists).
-For the second regressor, we do the same, but on a single child node spawned from the root node.
-We then fit standard decision tree regressors to our data.
-
-At test time, we make the decision $(v, b)$ as follows. We select $v$ according to a softmin (with decreasing temperature) over the values
-predicted by the first regressor. Then, we select $b$ using a softmin comparison between the two regressors'
-predicted values for $v$. If refining a child node would reduce the number of steps to a valid refinement,
-we bias toward generating a child node.
+At test time, they use the regressors to find the best two-tiered action to take at each step.
+For example, if refining a child node would reduce the number of steps to a valid refinement,
+they bias toward generating a child node.
