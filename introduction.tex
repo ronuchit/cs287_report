@@ -35,13 +35,14 @@ high-level (logic-based) plans and their low-level
 \emph{refinements}, instantiations of continuous values for
 symbolic references in the plan. We refer to this search for a valid low-level
 refinement as \emph{plan refinement}. In this paper, we improve upon
-this work's preliminary methods for high-level search and retain its methods
+the recent work's preliminary methods for high-level search, while retaining its methods
 for learning low-level refinement distributions.
 
 As in Chitnis et al.~\cite{chitnis2015mlpc}, we make use of unpublished work
 recently submitted for review to ICRA 2016. The work develops
 a \emph{plan refinement graph}, a data structure that stores a
-set of qualitatively different high-level plans that could solve a task.
+set of qualitatively different high-level plans that could solve a task (the graph is
+described in detail in Section IV-B).
 During planning, we repeatedly select one such plan and either 1) try to
 refine it or 2) incorporate geometric information in order to generate a new high-level
 plan. This allows interleaving plan refinement with a
@@ -51,14 +52,15 @@ that address different infeasibilities.
 We present machine learning techniques used in learning from demonstrations
 to train heuristic functions that guide the search process over the high level.
 This amounts to learning to predict how difficult it is to refine a given plan.
-Many TAMP systems rely on hand-coded heuristics to achieve this, often requiring
-domain-specific insight from the user. We develop a system that uses human
+Many TAMP systems rely on hand-coded heuristics to achieve this. We develop a system that uses human
 demonstrations of optimal plan-space trajectories to learn intelligent navigation
-of the plan refinement graph, using Dataset Aggregation (DAgger)~\cite{ross2010dagger}.
+of the plan refinement graph, using an inverse reinforcement learning
+max-margin formulation along with Dataset Aggregation (DAgger)~\cite{ross2010dagger}.
 
 The contributions of our work are as follows: 1) we formulate navigation through a plan
 refinement graph as an MDP; 2) we present a method that trains
-heuristics for intelligently searching the available space of task plans, by learning
-from demonstrations; and 3) we run experiments to evaluate the performance of our system in a
-variety of simulated domains. We show improvements in performance over SFRCRA-14
+heuristics for intelligently searching the available space of task plans, through learning
+from expert demonstrations; and 3)
+we run experiments to evaluate the performance of our system in a
+variety of simulated domains. We show improvements in performance over both SFRCRA-14
 and the preliminary system developed by Chitnis et al.~\cite{chitnis2015mlpc}.

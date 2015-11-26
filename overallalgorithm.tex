@@ -43,7 +43,7 @@ carrying out the necessary exchange of information in a scalable
 manner.
 
 \subsection{Plan Refinement Graph}
-Unpublished work recently submitted for review to ICRA 2016 builds on SFRCRA-14 develops a complete algorithm
+Unpublished work recently submitted for review to ICRA 2016 builds on SFRCRA-14 and develops a complete algorithm
 that maintains a \emph{plan refinement graph} (PRGraph). Every node $u$ in the PRGraph
 represents a high-level plan $\pi_u$ and the current state of the search
 for a refinement. An edge $(u,v)$ in the PRGraph
@@ -66,19 +66,19 @@ The overall search algorithm then interleaves the search for feasible
 refinements of each high-level plan with the addition into the
 PRGraph of new edges and plan nodes using the semantics described above.
 
-\subsection{Previous Approach for Learning to Search the Graph}
+\subsection{Previous Approach for Learning to Search the PRGraph}
 Chitnis et al.~\cite{chitnis2015mlpc} explain that the high level has a two-tiered
-decision to make: which node in the plan refinement graph to
+decision to make: which node in the PRGraph to
 visit next, and whether to 1) attempt to refine this node or 2) quickly generate failure information
 from it, thus spawning a child node. They develop heuristics that are trained to estimate
 the difficulty associated with refining a plan, in order to make this decision intelligently.
 
-To select between the potential refinement options, the authors learn two decision tree regressors
+To select between the potential refinement options, the authors train two decision tree regressors
 that determine how many iterations would be needed to achieve a valid refinement for a node, or for a child
 of that node which incorporates a single additional geometric fact about the environment.
 To obtain an estimate for a full plan, they sum this number across all of the plan's actions.
-This implicitly assumes that dependencies in plans are, in some way, local;
-it only makes sense if a plan can be split into subportions with independent refinements.
+The implicit assumption being made here is that dependencies in plans are, in some way, local:
+the plan must be factorizable into subportions with independent refinements.
 
 At test time, they use the regressors to find the best two-tiered action to take at each step.
 For example, if refining a child node would reduce the number of steps to a valid refinement,

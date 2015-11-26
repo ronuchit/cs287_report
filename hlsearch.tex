@@ -1,33 +1,33 @@
-\section{Learning to Search the Plan Refinement Graph}
+\section{Learning to Search the PRGraph}
 \subsection{Formulation as MDP}
 We adopt the same two-tiered decision strategy described in Section IV-C.
-We formulate plan refinement graph search as an MDP as follows:
+We formulate PRGraph search as an MDP as follows:
 \begin{tightlist}
 \item A state $s \in \St$ is a tuple $(PRG, r_{cur}, E)$, consisting of the
-plan refinement graph with all its high-level plans, the current setting of
+PRGraph with all its high-level plans, the current setting of
 values for symbolic references for all high-level plans, and
 an encoding of the geometric environment.
 \item An action $a \in \A$ is a pair $(n, m)$, where $n$ is the selected node and $m$ is
 the mode to apply (either trying to refine the node or quickly generating failure information).
 \item If we select a node $n$ to try to refine, the transition function $T(s, a, s')$ is the same
-as that in the plan refinement MDP presented in Chitnis et al.~\cite{chitnis2015mlpc}. If we instead
+as that in the plan refinement MDP presented in Chitnis et al.~\cite{chitnis2015mlpc} Briefly,
+it describes how continuous values for symbolic references in node $n$'s plan are resampled, altering $r_{cur}$. If we instead
 try to quickly generate failure information for $n$, then $T$ is defined by how we determine a geometric
 fact to replan with at the task planner level. In our system, we sample a trajectory (which may have
 collisions) for achieving each step in the plan, then roll out that trajectory in simulation and propagate
 back to the task planner the first error we encounter (obstructing object, unreachable object, etc.).
-\item The reward function $R(s, a, s')$ is 1 if any high-level plan in the graph has
-a set of associated symbolic reference values for which there exist collision-free linking
-trajectories, and 0 otherwise.
+\item The reward function $R(s, a, s')$ is 1 if $r_{cur}$ for any high-level plan in the PRGraph
+has collision-free linking trajectories, and 0 otherwise.
 \end{tightlist}
 
-\subsection{Approach}
+\subsection{Max-Margin Approach}
 We exploit properties of the environment to hand-design a feature vector $f(n)$ that geometrically
-describes aspects of a single high-level plan, encoding its refinability. Because the mode $m$ is binary,
+describes aspects of a single high-level plan, thus encoding its refinability. Because the mode $m$ is binary,
 we construct $$f((n, m)) = \begin{bmatrix} f(n) \\ f(n) \end{bmatrix} \begin{bmatrix} 1 - m \\ m \end{bmatrix},$$
 which stacks the feature vector for $n$ on itself, then turns off the bottom half when $m = 0$ and the
 top half when $m = 1$. Now that we have defined a feature vector associated with each action that can be taken
 from a state, we can obtain human-demonstrated trajectories (sequences of actions $(n, m)^{*}$) that intelligently
-navigate the plan refinement graph. We then solve the following max-margin optimization problem with a structured margin:
+navigate the PRGraph. We then solve the following max-margin optimization problem with a structured margin:
 $$\min ||w||^{2}$$
 $$\text{s.t.}\ w^{\top}f((n, m)_{i}^{*}) \geq w^{\top}f((n, m)_{ij}) + $$
 $$d(f((n, m)_{i}^{*}), f((n, m)_{ij}))\ \forall i, j$$
@@ -36,4 +36,12 @@ We note that the weight vector $w$ encodes a score function on the different act
 an ordering that matches the Q-function in the described MDP. Of course, the score function is not identical
 to the Q-function, because we are not incorporating $R(s, a, s')$ in our formulation for $w$.
 
-TODO: describe how we use dagger
+We use DAgger to augment our training data. In the first iteration, we navigate the PRGraph following
+the expert actions and store these actions in a dataset. After some iterations, we use the dataset to solve for an
+initial weight vector $w$. On subsequent iterations, we navigate the PRGraph by rolling out the policy
+encoded by $w$ (pick the action with the highest score $w^{\top}f((n, m))$) while asking the expert what
+the optimal action would be at each step, appending these into the dataset. After some iterations, we use the
+aggregated dataset to solve for a new $w$, and repeat.
+
+At test time, we follow the policy encoded by $w$ straightforwardly, picking the highest-scoring action
+at each step.
