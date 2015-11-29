@@ -30,7 +30,7 @@ from a state, we can obtain human-demonstrated trajectories (sequences of action
 navigate the PRGraph. We then solve the following max-margin optimization problem with a structured margin and slack variables:
 $$\min ||w||^{2} + C\sum_{i} \xi_{i}$$
 $$\text{s.t.}\ w^{\top}f((n, m)_{i}^{*}) \geq w^{\top}f((n, m)_{ij}) + $$
-$$d(f((n, m)_{i}^{*}), f((n, m)_{ij})) - \xi_{i}\ \forall i, j$$
+$$d(f((n, m)_{i}^{*}), f((n, m)_{ij})) - \xi_{i}\ \forall i, j,\ \xi_{i} \geq 0\ \forall i$$
 where the $i$ iterate over the demonstrated trajectories and the $j$ iterate over possible actions. Each
 demonstrated trajectory has an associated slack variable in this formulation.
 We note that the weight vector $w$ encodes a score function on the different actions, which produces

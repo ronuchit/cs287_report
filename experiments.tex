@@ -132,8 +132,8 @@ Our experiments are conducted in Python 2.7 using the OpenRave simulator~\cite{D
 The motion planner we use is trajopt~\cite{schulman2013finding}, and the task planner is Fast-Forward~\cite{FF}.
 The experiments were carried out in series on an Intel Core i7-4770K machine with 16GB RAM. For the max-margin optimization,
 we used a constant margin of $d = 1$, and we set $C = 10^{9}$, indicating that we want to penalize violating
-constraints significantly and are willing to have $||w||$ be large. In our experiments, though, $||w||$ did not actually become
-large. We used Gurobi as our optimizer for solving the quadratic program.
+constraints significantly and are willing to have $||w||$ grow. In our experiments, though, $||w||$ did not actually become
+so large that overfitting was an issue. We used Gurobi for solving the quadratic program.
 
 Table \ref{table:results} summarizes our quantitative results. \figref{fig:cover} illustrates a scenario where
 our learning methods prove important. \figref{fig:results_line}, \figref{fig:results_bar_succ}, and \figref{fig:results_bar_time} show our quantitative
