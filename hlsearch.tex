@@ -27,11 +27,12 @@ we construct $$f((n, m)) = \begin{bmatrix} f(n) \\ f(n) \end{bmatrix} \begin{bma
 which stacks the feature vector for $n$ on itself, then turns off the bottom half when $m = 0$ and the
 top half when $m = 1$. Now that we have defined a feature vector associated with each action that can be taken
 from a state, we can obtain human-demonstrated trajectories (sequences of actions $(n, m)^{*}$) that intelligently
-navigate the PRGraph. We then solve the following max-margin optimization problem with a structured margin:
-$$\min ||w||^{2}$$
+navigate the PRGraph. We then solve the following max-margin optimization problem with a structured margin and slack variables:
+$$\min ||w||^{2} + C\sum_{i} \xi_{i}$$
 $$\text{s.t.}\ w^{\top}f((n, m)_{i}^{*}) \geq w^{\top}f((n, m)_{ij}) + $$
-$$d(f((n, m)_{i}^{*}), f((n, m)_{ij}))\ \forall i, j$$
-where the $i$ iterate over the demonstrated trajectories and the $j$ iterate over possible actions.
+$$d(f((n, m)_{i}^{*}), f((n, m)_{ij})) - \xi_{i}\ \forall i, j$$
+where the $i$ iterate over the demonstrated trajectories and the $j$ iterate over possible actions. Each
+demonstrated trajectory has an associated slack variable in this formulation.
 We note that the weight vector $w$ encodes a score function on the different actions, which produces
 an ordering that matches the Q-function in the described MDP. Of course, the score function is not identical
 to the Q-function, because we are not incorporating $R(s, a, s')$ in our formulation for $w$.
