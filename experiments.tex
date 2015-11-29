@@ -3,7 +3,7 @@
   \centering
     \includegraphics[scale=0.3,angle=90]{images/feature_cone.png}
   \caption{\small{If the target object to be grasped is the black can, we consider the objects
-in a cone from angles $-\frac{\pi}{3}$ to $\frac{\pi}{3}$ toward the closest table edge in
+whose centers lie in a cone from angles $-\frac{\pi}{3}$ to $\frac{\pi}{3}$ toward the closest table edge in
 our feature computations. These objects are shown here in red.}}
   \label{fig:cone}
 \end{figure}
@@ -78,20 +78,32 @@ Baseline 2 is the prior work by Chitnis et al.~\cite{chitnis2015mlpc}, described
 
 \begin{figure}[h]
   \centering
-    \includegraphics[scale=0.18]{images/results_succ.png}
-  \caption{\small{Line graph illustrating success rates on the test set for each
-system, as described in the table caption. Our method performs much better
-than both baselines after 2 iterations of DAgger. Each line represents a different number of cans.}}
-  \label{fig:results_succ}
+    \includegraphics[scale=0.18]{images/results_line.png}
+  \caption{\small{Line graph illustrating success rates on the test set for baseline 1
+and our system after each round of DAgger, using the abbreviations described in the
+table caption. Each line represents a different number of cans. Our method performs much better than the baseline after 2 iterations of DAgger.
+We also note the upward trend in success rate across the iterations.}}
+  \label{fig:results_line}
 \end{figure}
 
 \begin{figure}[h]
   \centering
-    \includegraphics[scale=0.18]{images/results_time.png}
-  \caption{\small{Bar graph illustrating average total time on the test set for the
+    \includegraphics[scale=0.18]{images/results_bar_succ.png}
+  \caption{\small{Bar graph illustrating success rates on the test set for the
+two baselines and our system after 2 iterations of DAgger. Our method achieved much higher
+success rates than both baselines, in general. Green represents baseline 1, blue represents baseline 2, and
+red represents our system.}}
+  \label{fig:results_bar_succ}
+\end{figure}
+
+\begin{figure}[h]
+  \centering
+    \includegraphics[scale=0.18]{images/results_bar_time.png}
+  \caption{\small{Bar graph illustrating average total times on the test set for the
 two baselines and our system after 2 iterations of DAgger. Our method produced noticeably faster
-performance than both baselines. Each color represents a different number of cans.}}
-  \label{fig:results_time}
+performance than both baselines, in general. Green represents baseline 1, blue represents baseline 2, and
+red represents our system.}}
+  \label{fig:results_bar_time}
 \end{figure}
 
 We run four sets of experiments, using 25, 30, 35, and 40 cans on the table.
@@ -124,7 +136,7 @@ The experiments were carried out in series on an Intel Core i7-4770K machine wit
 as our optimizer for solving the max-margin quadratic program.
 
 Table \ref{table:results} summarizes our quantitative results. \figref{fig:cover} illustrates a scenario where
-our learning methods prove important. \figref{fig:results_succ} and \figref{fig:results_time} show our quantitative
+our learning methods prove important. \figref{fig:results_line}, \figref{fig:results_bar_succ}, and \figref{fig:results_bar_time} show our quantitative
 results in graphs. The results demonstrate significant improvements in performance to the baseline systems for success rate and
 average overall time. The number of calls to the motion planner remained roughly the same,
 suggesting that the performance benefits instead derive from less time wasted on inverse kinematics checks when
