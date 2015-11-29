@@ -1,4 +1,15 @@
 \section{Solving Task and Motion Planning Problems}
+\begin{figure}[t]
+  \centering
+    \includegraphics[scale=0.3]{images/ex_prg.png}
+  \caption{\small{A simple plan refinement graph for an environment with 3 objects: A,
+B, and C. The goal is to grasp object A. Each node maintains a high-level
+plan and a set of instantiated continuous values for its symbolic references.
+The edges are labeled with errors discovered by the low-level motion planner and
+propagated back up to the task planner for replanning.}}
+  \label{fig:prg}
+\end{figure}
+
 \subsection{SFRCRA-14}
 Solving TAMP problems requires evaluation of
 possible courses of action comprised of different combinations of
@@ -65,6 +76,8 @@ in the $k^{th}$ state.
 The overall search algorithm then interleaves the search for feasible
 refinements of each high-level plan with the addition into the
 PRGraph of new edges and plan nodes using the semantics described above.
+
+\figref{fig:prg} illustrates a simple example of a PRGraph.
 
 \subsection{Previous Approach for Learning to Search the PRGraph}
 Chitnis et al.~\cite{chitnis2015mlpc} explain that the high level has a two-tiered
