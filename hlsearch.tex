@@ -47,14 +47,7 @@ aggregated dataset to solve for a new $w$, and repeat.
 At test time, we follow the policy encoded by $w$ straightforwardly, picking the highest-scoring action
 at each step.
 
-\subsection{Logistic Regression}
-%Given a sequence of action, we can also learn a heuristic that discriminates between “good” and “bad” actions.
-Using the same feature vector defined in the previous section we can learn a heuristic function using a linear classifier to discriminate between “good” and “bad” actions.
+\subsection{Logistic Regression Approach}
+Within the framework of classification, a policy is equivalent to a classifier that discriminates between between “good” and “bad” actions. While it is natural to model the quantity $p(action|state)$, the underlying state space doesn't have a fixed dimensionality across different instantiations of the problem and is difficult to express using a feature vector of constant length. Thus we relax the problem and model the quantity $p(optimal|action)$. This is simply a binary classification problem where the label takes on two possible values: ``optimal'' and ``not optimal''. Using a logistic regression model we express the conditional probability as $$p(optimal=true|action;w) = \frac{1}{1+e^{-w^\top x}}$$ where $x = f((n,m))$ is the feature vector associated with the current action. To estimate the parameter vector $w$ we minimize the following cost function: $$\ell(w|D)=\lambda||w||^2_2-\sum_{ij} y_{ij}\log\mu_{ij}+(1-y_{ij})\log(1-\mu_{ij})$$ where $\mu_{ij}=1/(1+e^{-w^\top f((n,m)_{ij})})$ and $y_{ij}=1$ if the human took action $j$ in the $i$'th demonstration and $0$ otherwise.
 
-This approach is discriminative in the sense that it only at-
-tempts to learn a heuristic that discriminates between “good”
-and “bad” states well enough to find the goal, rather than at-
-tempting  to  precisely  model  the  distance-to-goal.   In  many
-areas of machine learning, such discriminative methods have
-been observed to outperform their non-discriminative coun-
-terparts. 
+We do not explicitly use DAgger to augment the training data for this approach, instead we train on the largest data set from the Max-Margin approach. At test time, we take evaluate two different with the following approaches 1) take the action associated with the highest probability of being optimal 2) normalize the probability across all possible actions and randomly pick an action proportional to the normalize distribution.
