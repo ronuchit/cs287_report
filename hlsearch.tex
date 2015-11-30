@@ -23,7 +23,7 @@ has collision-free linking trajectories, and 0 otherwise.
 \subsection{Max-Margin Approach}
 We exploit properties of the environment to hand-design a feature vector $f(n)$ that geometrically
 describes aspects of a single high-level plan, thus encoding its refinability. Because the mode $m$ is binary,
-we construct $$f((n, m)) = \begin{bmatrix} f(n) \\ f(n) \end{bmatrix} \begin{bmatrix} 1 - m \\ m \end{bmatrix},$$
+we construct $$f((n, m)) = \begin{bmatrix} f(n) \\ f(n) \end{bmatrix}^\top \begin{bmatrix} 1 - m \\ m \end{bmatrix},$$
 which stacks the feature vector for $n$ on itself, then turns off the bottom half when $m = 0$ and the
 top half when $m = 1$. Now that we have defined a feature vector associated with each action that can be taken
 from a state, we can obtain human-demonstrated trajectories (sequences of actions $(n, m)^{*}$) that intelligently
@@ -46,3 +46,15 @@ aggregated dataset to solve for a new $w$, and repeat.
 
 At test time, we follow the policy encoded by $w$ straightforwardly, picking the highest-scoring action
 at each step.
+
+\subsection{Logistic Regression}
+%Given a sequence of action, we can also learn a heuristic that discriminates between “good” and “bad” actions.
+Using the same feature vector defined in the previous section we can learn a heuristic function using a linear classifier to discriminate between “good” and “bad” actions.
+
+This approach is discriminative in the sense that it only at-
+tempts to learn a heuristic that discriminates between “good”
+and “bad” states well enough to find the goal, rather than at-
+tempting  to  precisely  model  the  distance-to-goal.   In  many
+areas of machine learning, such discriminative methods have
+been observed to outperform their non-discriminative coun-
+terparts. 
