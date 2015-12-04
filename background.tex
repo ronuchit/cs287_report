@@ -4,7 +4,7 @@ used throughout the paper.
 
 \subsection{Task and Motion Planning}
 
-A motion planning problem is a defined as a tuple $\tuple{\X, f, p_0,
+A motion planning problem is defined as a tuple $\tuple{\X, f, p_0,
   p_t}$, where $\X$ is the space of possible configurations or poses
 of a robot, $f$ is a Boolean function that determines whether or not a
 pose is in collision, and $p_0, p_t\in C$ are the initial and final
@@ -160,3 +160,5 @@ discounted future rewards generated from starting in state $s$ and selecting act
 to $\pi$:
 $$V_{\pi}(s) = \mathbb{E}[\sum_{t=0}^{\infty}\gamma^{t}R(s_{t}) | \pi, s_{0} = s].$$
 The optimal policy, $\pi^{*}$, maximizes this value for all states.
+% The Q-function is defined over state action pairs as:
+% $$Q_{\pi}(s,a) = \mathbb{E}[\sum_{t=0}^{\infty}\gamma^{t}R(s_{t},a_{t}) | \pi, s_{0} = s, a_0 = a].$$

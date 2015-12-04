@@ -67,7 +67,7 @@ explains why they do not scale with the number of cans. Time limit: 300s.}}
   % \vspace{-1em}
 \end{table}
 
-We evaluate our approach in the can domain, which has cans distributed on a table. We
+We evaluate our approach in the can domain, which has cans uniformly distributed on a table. We
 compare performance with two baselines. Baseline 1 is SFRCRA-14, which uses the
 following fixed graph search policy: try 3 times to refine the deepest
 node in the PRGraph; if unsuccessful, generate a geometric fact from it, replan (which
@@ -115,12 +115,14 @@ of a sequence of object grasp and putdown actions, we first consider features of
 at an object $o$ in the environment. Consider a cone ranging from angles $-\frac{\pi}{3}$ to $\frac{\pi}{3}$
 toward the closest table edge from $o$, as shown in \figref{fig:cone}. The first feature, exists\_obstr, is a binary variable indicating
 whether any other objects lie in this cone. The second, exists\_path, is a binary variable indicating whether there is a linear
-grasp path wide enough for the robot's gripper to fit through within the cone. The third, sweep\_count, sweeps
-a cylinder $c$ approximating the robot's gripper across 10 discretized angles from $-\frac{\pi}{3}$ to
-$\frac{\pi}{3}$ and is the minimum number of objects in collision with $c$ across these angles.
+grasp path wide enough for the robot's gripper to fit through within the cone. For the third feature, we approximate the robot's arm and gripper with a cylinder $c$ and sweep it across 10 discretized angles from $-\frac{\pi}{3}$ to
+$\frac{\pi}{3}$. We then store the minimum number of collisions with $c$ as the feature, sweep\_count. This gives us a coarse approximation for the minimum number of object that should be moved before the target object is accessible via in a linear path.
+% We store this value as the third feature, sweep\_count. The third, sweep\_count, sweeps
+% a cylinder $c$ approximating the robot's gripper across 10 discretized angles from $-\frac{\pi}{3}$ to
+% $\frac{\pi}{3}$ and is the minimum number of objects in collision with $c$ across these angles.
 We construct these features for the first five grasp actions in the plan (padding with -1 if there are not enough).
-We then add on the following aggregate features associated with the entire plan: 1) the minimum exists\_obstr across grasp actions,
-2) the sum of sweep\_count across grasp actions, 3) a counter for how many times $n$ was picked for refinement, and
+We then add on the following aggregate features associated with the entire plan: 1) the minimum exists\_obstr across all grasp actions,
+2) the sum of sweep\_count across all grasp actions, 3) a counter for how many times $n$ was picked for refinement, and
 4) a counter for how many times $n$ was picked for generating an error.
 
 We report results on fixed test sets of 50 randomly generated environments per number of objects. At each
