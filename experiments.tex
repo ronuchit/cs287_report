@@ -132,7 +132,7 @@ at an object $o$ in the environment. Consider a cone ranging from angles $-\frac
 toward the closest table edge from $o$, as shown in \figref{fig:cone}. The first feature, exists\_obstr, is a binary variable indicating
 whether any other objects lie in this cone. The second, exists\_path, is a binary variable indicating whether there is a linear
 grasp path wide enough for the robot's gripper to fit through within the cone. For the third feature, we approximate the robot's arm and gripper with a cylinder $c$ and sweep it across 10 discretized angles from $-\frac{\pi}{3}$ to
-$\frac{\pi}{3}$. We then store the minimum number of collisions with $c$ as the feature, sweep\_count. This gives us a coarse approximation for the minimum number of object that should be moved before the target object is accessible via in a linear path.
+$\frac{\pi}{3}$. We then store the minimum number of collisions with $c$ as the feature, sweep\_count. This gives us a coarse approximation for the minimum number of object that should be moved before the target object is accessible via a linear path.
 % We store this value as the third feature, sweep\_count. The third, sweep\_count, sweeps
 % a cylinder $c$ approximating the robot's gripper across 10 discretized angles from $-\frac{\pi}{3}$ to
 % $\frac{\pi}{3}$ and is the minimum number of objects in collision with $c$ across these angles.
@@ -140,7 +140,7 @@ We construct these features for the first five grasp actions in the plan (paddin
 We then add on the following aggregate features associated with the entire plan: 1) the minimum exists\_obstr across all grasp actions,
 2) the sum of sweep\_count across all grasp actions, 3) a counter for how many times $n$ was picked for refinement,
 4) a counter for how many times $n$ was picked for generating an error,
-5) the max of 0 and the difference between expected plan length and the current plan length, this indicates how much shorter the current plan is, and 6) the analog of the previous feature to indicate how much longer than expected the current plan is. The expected plan length is approximated as a linear function of sweep\_count. For the logistic regression approach added a bias term to the feature vector.
+5) the max of 0 and the difference between expected plan length and the current plan length, this indicates how much shorter the current plan is, and 6) the analog of the previous feature to indicate how much longer than expected the current plan is. The expected plan length is approximated as a linear function of sweep\_count. For the logistic regression approach we added a bias term to the feature vector.
 
 We report results on fixed test sets of 50 randomly generated environments per number of objects. At each
 iteration of training, we collect approximately 100 optimal actions from the human demonstrator (using
