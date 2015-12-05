@@ -116,7 +116,7 @@ success rates than both baselines, in general. The deterministic policy trained 
     \includegraphics[scale=0.43]{images/results_bar_time}
   \caption{\small{Bar graph illustrating average total times on the test set for the
 two baselines, the two logistic regression policies, and our max-margin formulation after 2 iterations of DAgger. The max-margin approach produced noticeably faster
-performance than both baselines, in general. The deterministic policy trained with logistic regression had comparable results. In the 40 can environment it had an increased planning time but this is OK because in more challenging environments the baseline can only solve simple instantiations which naturally have a lower planning time.}}
+performance than both baselines, in general. The deterministic policy trained with logistic regression had comparable results. In the 40 can environment it had an increased planning time compared to the baseline, but this is OK because in more challenging environments the baseline can only solve simple instantiations which naturally have a lower planning time.}}
   \label{fig:results_bar_time}
 \end{figure}
 
@@ -138,8 +138,9 @@ $\frac{\pi}{3}$. We then store the minimum number of collisions with $c$ as the 
 % $\frac{\pi}{3}$ and is the minimum number of objects in collision with $c$ across these angles.
 We construct these features for the first five grasp actions in the plan (padding with -1 if there are not enough).
 We then add on the following aggregate features associated with the entire plan: 1) the minimum exists\_obstr across all grasp actions,
-2) the sum of sweep\_count across all grasp actions, 3) a counter for how many times $n$ was picked for refinement, and
-4) a counter for how many times $n$ was picked for generating an error.
+2) the sum of sweep\_count across all grasp actions, 3) a counter for how many times $n$ was picked for refinement,
+4) a counter for how many times $n$ was picked for generating an error,
+5) the max of 0 and the difference between expected plan length and the current plan length, this indicates how much shorter the current plan is, and 6) the analog of the previous feature to indicate how much longer than expected the current plan is. The expected plan length is approximated as a linear function of sweep\_count. For the logistic regression approach added a bias term to the feature vector.
 
 We report results on fixed test sets of 50 randomly generated environments per number of objects. At each
 iteration of training, we collect approximately 100 optimal actions from the human demonstrator (using
