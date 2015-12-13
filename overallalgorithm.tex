@@ -86,7 +86,7 @@ visit next, and whether to 1) attempt to refine this node or 2) quickly generate
 from it, thus spawning a child node. They develop heuristics that are trained to estimate
 the difficulty associated with refining a plan, in order to make this decision intelligently.
 
-To select between the potential refinement options, the authors train two decision tree regressors
+To select among the potential refinement options, the authors train two decision tree regressors
 that determine how many iterations would be needed to achieve a valid refinement for a node, or for a child
 of that node which incorporates a single additional geometric fact about the environment.
 To obtain an estimate for a full plan, they sum this number across all of the plan's actions.
