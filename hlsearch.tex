@@ -23,7 +23,7 @@ has collision-free linking trajectories, and 0 otherwise.
 \subsection{Max-Margin Approach}
 We exploit properties of the environment to hand-design a feature vector $f(n)$ that geometrically
 describes aspects of a single high-level plan, thus encoding its refinability. Because the mode $m$ is binary,
-we construct $$f((n, m)) = \begin{bmatrix} f(n) \\ f(n) \end{bmatrix} \begin{bmatrix} 1 - m \\ m \end{bmatrix},$$
+we construct $$f((n, m)) = \begin{bmatrix} f(n) \\ f(n) \end{bmatrix}^\top \begin{bmatrix} 1 - m \\ m \end{bmatrix},$$
 which stacks the feature vector for $n$ on itself, then turns off the bottom half when $m = 0$ and the
 top half when $m = 1$. Now that we have defined a feature vector associated with each action that can be taken
 from a state, we can obtain human-demonstrated trajectories (sequences of actions $(n, m)^{*}$) that intelligently
@@ -46,3 +46,8 @@ aggregated dataset to solve for a new $w$, and repeat.
 
 At test time, we follow the policy encoded by $w$ straightforwardly, picking the highest-scoring action
 at each step.
+
+\subsection{Logistic Regression Approach}
+Within the framework of classification, a policy can be viewed as a classifier that discriminates between ``good'' and ``bad'' actions. While it is natural to model the quantity $p(action|state)$, which can be viewed as a multi-class classification problem, the action space support varies with the number of nodes added to the PRGraph. Instead, we relax the problem and model the quantity $p(optimal|action,state)$. This is simply a binary classification problem where the label takes on two possible values: ``optimal'' and ``not optimal''. Using a logistic regression model we express the conditional probability as $$p(optimal=true|action,state;w) = \frac{1}{1+e^{-w^\top x}}$$ where $x = f((n,m))$ is the feature vector associated with the current action. To estimate the parameter vector $w$ we minimize the following cost function: $$\ell(w|D)=\lambda||w||^2_2-\sum_{ij} y_{ij}\log\mu_{ij}+(1-y_{ij})\log(1-\mu_{ij})$$ where $\mu_{ij}=1/(1+e^{-w^\top f((n,m)_{ij})})$ and $y_{ij}=1$ if the human took action $j$ in the $i$'th demonstration and $0$ otherwise. We make the assumption that humans performs optimally.
+
+For this approach we do not explicitly use DAgger to augment the training data, instead we train on the largest data set that was collected. At test time, we evaluate a stochastic policy and a deterministic policy. The deterministic policy takes the action with the highest probability of being optimal. For the stochastic policy we normalize the probability of being optimal across all possible actions and randomly select an action from the resulting distribution.

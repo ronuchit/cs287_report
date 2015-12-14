@@ -59,8 +59,7 @@ to train heuristic functions that guide the search process over the high level.
 This amounts to learning to predict how difficult it is to refine a given plan.
 Many TAMP systems rely on hand-coded heuristics to achieve this. We develop a system that uses human
 demonstrations of optimal plan-space trajectories to learn intelligent navigation
-of the plan refinement graph, using an inverse reinforcement learning
-max-margin formulation along with Dataset Aggregation (DAgger)~\cite{ross2010dagger}.
+of the plan refinement graph. We use 1) a max-margin formulation, which is commonly used in inverse reinforcement learning, along with Dataset Aggregation (DAgger)~\cite{ross2010dagger} and 2) a discriminative formulation using logistic regression.
 
 The contributions of our work are as follows: 1) we formulate navigation through a plan
 refinement graph as an MDP; 2) we present a method that trains

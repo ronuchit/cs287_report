@@ -25,6 +25,10 @@ our feature computations. These objects are shown here in red.}}
       25 & I1 & 94 & 28.5 & 19\\
     \midrule
       25 & I2 & 100 & 21.0 & 18\\
+    \midrule
+      25 & LS & 96 & 29.1 & 23\\
+    \midrule
+      25 & LD & 98 & 19.8 & 18\\
     \midrule[1.5pt]
       30 & B1 & 74 & 48.9 & 29\\
     \midrule
@@ -35,6 +39,10 @@ our feature computations. These objects are shown here in red.}}
       30 & I1 & 76 & 44.2 & 28\\
     \midrule
       30 & I2 & 80 & 42.7 & 30\\
+    \midrule
+      30 & LS & 78 & 45.7 & 35\\
+    \midrule
+      30 & LD & 78 & 37.8 & 29\\
     \midrule[1.5pt]
       35 & B1 & 68 & 24.5 & 15\\
     \midrule
@@ -45,6 +53,10 @@ our feature computations. These objects are shown here in red.}}
       35 & I1 & 76 & 22.4 & 14\\
     \midrule
       35 & I2 & 80 & 22.7 & 14\\
+    \midrule
+      35 & LS & 76 & 23.5 & 15\\
+    \midrule
+      35 & LD & 82 & 25.5 & 15\\
     \midrule[1.5pt]
       40 & B1 & 58 & 35.9 & 15\\
     \midrule
@@ -55,10 +67,14 @@ our feature computations. These objects are shown here in red.}}
       40 & I1 & 64 & 36.6 & 14\\
     \midrule
       40 & I2 & 76 & 36.9 & 16\\
+    \midrule
+      40 & LS & 64 & 51 & 22\\
+    \midrule
+      40 & LD & 70 & 49.1 & 18\\
     \bottomrule[1.5pt]
   \end{tabular}}
   \caption{\small{Percent solved, average overall time, and average number of calls to the motion
-planner for baseline 1 (B1), baseline 2 (B2), and our method after iterations 0 (I0), 1 (I1), and 2 (I2).
+planner for baseline 1 (B1), baseline 2 (B2), logistic regression with stochastic policy (LS), logistic regression with deterministic policy (LD), and max-margin with DAgger after iteration 0 (I0), 1 (I1), and 2 (I2).
 Iteration 0 evaluates performance before DAgger was run (so just the initial set of 100 demonstrations),
 and iterations 1 and 2 are after one and two rounds of DAgger, respectively. Average time and number of
 motion planner calls were computed across the subset of environments for which all systems succeeded, which
@@ -67,7 +83,7 @@ explains why they do not scale with the number of cans. Time limit: 300s.}}
   % \vspace{-1em}
 \end{table}
 
-We evaluate our approach in the can domain, which has cans distributed on a table. We
+We evaluate our approach in the can domain, which has cans uniformly distributed on a table. We
 compare performance with two baselines. Baseline 1 is SFRCRA-14, which uses the
 following fixed graph search policy: try 3 times to refine the deepest
 node in the PRGraph; if unsuccessful, generate a geometric fact from it, replan (which
@@ -78,7 +94,7 @@ Baseline 2 is the prior work by Chitnis et al.~\cite{chitnis2015mlpc}, described
 
 \begin{figure}[h]
   \centering
-    \includegraphics[scale=0.43]{images/results_line.png}
+    \includegraphics[scale=0.43]{images/results_line}
   \caption{\small{Line graph illustrating success rates on the test set for baseline 1
 and our system after each round of DAgger, using the abbreviations described in the
 table caption. Our method performs much better than the baseline after 2 iterations of DAgger.
@@ -88,19 +104,19 @@ We also note the upward trend in success rate across the iterations.}}
 
 \begin{figure}[h]
   \centering
-    \includegraphics[scale=0.43]{images/results_bar_succ.png}
+    \includegraphics[scale=0.43]{images/results_bar_succ}
   \caption{\small{Bar graph illustrating success rates on the test set for the
-two baselines and our system after 2 iterations of DAgger. Our method achieved much higher
-success rates than both baselines, in general.}}
+two baselines, the two logistic regression policies, and our max-margin formulation after 2 iterations of DAgger. The abbreviations are described in the caption of Table I. The max-margin approach achieved much higher
+success rates than both baselines, in general. The deterministic policy trained with logistic regression had comparable results.}}
   \label{fig:results_bar_succ}
 \end{figure}
 
 \begin{figure}[h]
   \centering
-    \includegraphics[scale=0.43]{images/results_bar_time.png}
+    \includegraphics[scale=0.43]{images/results_bar_time}
   \caption{\small{Bar graph illustrating average total times on the test set for the
-two baselines and our system after 2 iterations of DAgger. Our method produced noticeably faster
-performance than both baselines, in general.}}
+two baselines, the two logistic regression policies, and our max-margin formulation after 2 iterations of DAgger. The abbreviations are described in the caption of Table I. The max-margin approach produced noticeably faster
+performance than both baselines, in general. The deterministic policy trained with logistic regression had comparable results. In the 40 can environment it had an increased planning time compared to the baseline, but this is OK because in more challenging environments the baseline can only solve simple instantiations which naturally have a lower planning time.}}
   \label{fig:results_bar_time}
 \end{figure}
 
@@ -115,13 +131,16 @@ of a sequence of object grasp and putdown actions, we first consider features of
 at an object $o$ in the environment. Consider a cone ranging from angles $-\frac{\pi}{3}$ to $\frac{\pi}{3}$
 toward the closest table edge from $o$, as shown in \figref{fig:cone}. The first feature, exists\_obstr, is a binary variable indicating
 whether any other objects lie in this cone. The second, exists\_path, is a binary variable indicating whether there is a linear
-grasp path wide enough for the robot's gripper to fit through within the cone. The third, sweep\_count, sweeps
-a cylinder $c$ approximating the robot's gripper across 10 discretized angles from $-\frac{\pi}{3}$ to
-$\frac{\pi}{3}$ and is the minimum number of objects in collision with $c$ across these angles.
+grasp path wide enough for the robot's gripper to fit through within the cone. For the third feature, we approximate the robot's arm and gripper with a cylinder $c$ and sweep it across 10 discretized angles from $-\frac{\pi}{3}$ to
+$\frac{\pi}{3}$. We then store the minimum number of collisions with $c$ as the feature, sweep\_count. This gives us a coarse approximation for the minimum number of object that should be moved before the target object is accessible via a linear path.
+% We store this value as the third feature, sweep\_count. The third, sweep\_count, sweeps
+% a cylinder $c$ approximating the robot's gripper across 10 discretized angles from $-\frac{\pi}{3}$ to
+% $\frac{\pi}{3}$ and is the minimum number of objects in collision with $c$ across these angles.
 We construct these features for the first five grasp actions in the plan (padding with -1 if there are not enough).
-We then add on the following aggregate features associated with the entire plan: 1) the minimum exists\_obstr across grasp actions,
-2) the sum of sweep\_count across grasp actions, 3) a counter for how many times $n$ was picked for refinement, and
-4) a counter for how many times $n$ was picked for generating an error.
+We then add on the following aggregate features associated with the entire plan: 1) the minimum exists\_obstr across all grasp actions,
+2) the sum of sweep\_count across all grasp actions, 3) a counter for how many times $n$ was picked for refinement,
+4) a counter for how many times $n$ was picked for generating an error,
+5) the max of 0 and the difference between expected plan length and the current plan length, this indicates how much shorter the current plan is, and 6) the analog of the previous feature to indicate how much longer than expected the current plan is. The expected plan length is approximated as a linear function of sweep\_count. For the logistic regression approach we added a bias term to the feature vector.
 
 We report results on fixed test sets of 50 randomly generated environments per number of objects. At each
 iteration of training, we collect approximately 100 optimal actions from the human demonstrator (using
